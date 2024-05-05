@@ -43,24 +43,24 @@ export default function Heading() {
             </Link>
           </li>
           <li className="topListItem">
-            <Link className="link" to="/about">
+            <Link className="link" to="/">
               ABOUT
             </Link>
           </li>
           <li className="topListItem">
-            <Link className="link" to="/contact">
+            <Link className="link" to="/">
               CONTACT
             </Link>
           </li>
           <li className="topListItem">
-            <Link className="link" to="/write">
+            <Link className="link" to="/Write">
               WRITE
             </Link>
           </li>
         </ul>
       </div>
       <div className="topRight">
-        <Link className="link" to="/settings">
+        <Link className="link" to="/">
           <img
             className="topImg"
             src={require("../../images/ujjwal.jpg")}

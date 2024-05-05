@@ -1,11 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../db/db.config");
+const multer = require("multer");
+const path = require("path");
 
-router.get("/blogs", (req, res) => {
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../../../frontend/src/uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+router.get("/", (req, res) => {
   connection.query("SELECT * FROM blogs", (error, results) => {
     if (error) {
-      console.error("Error" + error.stack);
+      console.error("Error" + error);
       res.status(500).json({ error: "Server Error" });
       return;
     }
@@ -13,7 +26,7 @@ router.get("/blogs", (req, res) => {
   });
 });
 
-router.get("/blogs/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   const id = req.params.id;
   connection.query(
     "SELECT * FROM blogs WHERE id = ?",
@@ -33,26 +46,25 @@ router.get("/blogs/:id", (req, res) => {
   );
 });
 
-
-router.post("/blogs", (req, res) => {
+router.post("/", upload.single("image"), (req, res) => {
   const { title, content } = req.body;
+  const imagePath = req.file.path.replace("backend", "frontend/public");
+
   connection.query(
-    "INSERT INTO blogs (title, content) VALUES (?, ?)",
-    [title, content],
+    "INSERT INTO blogs (title, content, image) VALUES (?, ?, ?)",
+    [title, content, imagePath],
     (error, results) => {
       if (error) {
-        console.error("Error" + error.stack);
+        console.error("Error inserting blog:", error);
         res.status(500).json({ error: "Server Error" });
         return;
       }
-      res
-        .status(201)
-        .json({ message: "Blog created successfully", id: results.insertId });
+      res.status(201).json({ message: "Blog created successfully" });
     }
   );
 });
 
-router.put("/blogs/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   const id = req.params.id;
   const { title, content } = req.body;
   connection.query(
@@ -60,7 +72,7 @@ router.put("/blogs/:id", (req, res) => {
     [title, content, id],
     (error, results) => {
       if (error) {
-        console.error("Error" + error.stack);
+        console.error("Error updating blog:", error.stack);
         res.status(500).json({ error: "Server Error" });
         return;
       }
@@ -73,11 +85,12 @@ router.put("/blogs/:id", (req, res) => {
   );
 });
 
-router.delete("/blogs/:id", (req, res) => {
+// Delete a blog post
+router.delete("/:id", (req, res) => {
   const id = req.params.id;
   connection.query("DELETE FROM blogs WHERE id = ?", [id], (error, results) => {
     if (error) {
-      console.error("Error" + error.stack);
+      console.error("Error deleting blog:", error.stack);
       res.status(500).json({ error: "Server Error" });
       return;
     }

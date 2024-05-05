@@ -8,7 +8,7 @@
   width: 300px;
   margin: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.3s ease;
 }
@@ -27,17 +27,6 @@
 
 .postInfo {
   padding: 20px;
-}
-
-.postCats {
-  margin-bottom: 10px;
-}
-
-.postCat {
-  margin-right: 10px;
-  font-size: 14px;
-  color: #888;
-  font-family: "Varela Round", Arial, Helvetica, sans-serif;
 }
 
 .postTitle {
